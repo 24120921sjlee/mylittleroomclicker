@@ -1,0 +1,2713 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pink Room Clicker</title>
+
+<style>
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+
+  background:
+    linear-gradient(#c68ba0, #a86f86);
+
+  font-family: "Courier New", monospace;
+  color: #5d3847;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  padding: 25px;
+}
+
+/* =========================
+   GAME WINDOW
+========================= */
+
+.game {
+  width: 1040px;
+  max-width: 100%;
+
+  background: #f7d5df;
+
+  border: 5px solid #704758;
+
+  box-shadow:
+    8px 8px 0 #4e303c,
+    inset 0 0 0 3px #fff0f4;
+
+  padding: 16px;
+}
+
+/* =========================
+   HEADER
+========================= */
+
+.header {
+  background: #fff0f4;
+
+  border: 4px solid #936174;
+
+  box-shadow: 4px 4px 0 #b8788e;
+
+  padding: 10px;
+
+  text-align: center;
+
+  margin-bottom: 15px;
+}
+
+.title {
+  font-weight: bold;
+  letter-spacing: 2px;
+  font-size: 20px;
+}
+
+#score {
+  margin-top: 4px;
+  font-size: 25px;
+  color: #ac5071;
+  font-weight: bold;
+}
+
+#power {
+  font-size: 12px;
+  margin-top: 3px;
+}
+
+/* =========================
+   LAYOUT
+========================= */
+
+.content {
+  display: grid;
+
+  grid-template-columns:
+    minmax(0, 1fr)
+    230px;
+
+  gap: 16px;
+}
+
+/* =========================
+   ROOM
+========================= */
+
+.room-area {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.room-frame {
+  background: #583843;
+  padding: 5px;
+
+  box-shadow:
+    5px 5px 0 #3c2730;
+}
+
+canvas {
+  display: block;
+
+  /*
+    Internal resolution = 480x360.
+
+    Browser enlarges it,
+    but smoothing is disabled,
+    so the pixels stay sharp.
+  */
+
+  width: 768px;
+  max-width: 100%;
+
+  image-rendering: pixelated;
+  image-rendering: crisp-edges;
+
+  background: black;
+}
+
+/* =========================
+   BUTTON
+========================= */
+
+#decorate {
+  margin-top: 18px;
+
+  width: 270px;
+  height: 73px;
+
+  border: 4px solid #754457;
+
+  background: #dc769b;
+
+  color: white;
+
+  font-weight: bold;
+  font-size: 18px;
+
+  font-family: inherit;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 6px 0 #9b506a,
+    0 9px 0 #633848;
+}
+
+#decorate:hover {
+  background: #e788aa;
+}
+
+#decorate:active {
+  transform: translateY(5px);
+
+  box-shadow:
+    0 1px 0 #9b506a,
+    0 4px 0 #633848;
+}
+
+#message {
+  margin-top: 13px;
+
+  min-height: 19px;
+
+  font-size: 12px;
+  font-weight: bold;
+
+  text-align: center;
+
+  color: #9b4968;
+}
+
+#next {
+  font-size: 11px;
+  margin-top: 6px;
+}
+
+/* =========================
+   SHOP
+========================= */
+
+.shop {
+  background: #f2bccc;
+
+  border: 4px solid #815063;
+
+  box-shadow: 5px 5px 0 #5c3947;
+
+  padding: 11px;
+
+  height: fit-content;
+}
+
+.shop-title {
+  text-align: center;
+
+  margin-bottom: 10px;
+
+  font-size: 16px;
+  font-weight: bold;
+}
+
+.boost {
+  background: #ffe5ec;
+
+  border: 3px solid #a4657c;
+
+  padding: 9px;
+
+  margin-bottom: 10px;
+}
+
+.boost-name {
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.boost-description {
+  font-size: 10px;
+
+  margin:
+    5px 0
+    8px;
+
+  line-height: 1.4;
+}
+
+.boost button {
+  width: 100%;
+
+  background: #cf6487;
+
+  border: 3px solid #784759;
+
+  color: white;
+
+  padding: 6px;
+
+  font-family: inherit;
+
+  font-size: 11px;
+
+  font-weight: bold;
+
+  cursor: pointer;
+}
+
+.boost button:disabled {
+  background: #c9a3af;
+  color: #806872;
+  cursor: default;
+}
+
+@media(max-width: 900px) {
+
+  .content {
+    grid-template-columns: 1fr;
+  }
+
+  .shop {
+    width: 100%;
+  }
+}
+</style>
+</head>
+
+
+<body>
+
+<div class="game">
+
+  <div class="header">
+
+    <div class="title">
+      ♡ MY LITTLE ROOM ♡
+    </div>
+
+    <div id="score">
+      0
+    </div>
+
+    <div id="power">
+      +1 per click
+    </div>
+
+  </div>
+
+
+  <div class="content">
+
+    <!-- ================= ROOM ================= -->
+
+    <div class="room-area">
+
+      <div class="room-frame">
+
+        <canvas
+          id="room"
+          width="480"
+          height="360">
+        </canvas>
+
+      </div>
+
+
+      <button id="decorate">
+        ♡ DECORATE ♡
+      </button>
+
+
+      <div id="message">
+        An empty room... let's make it cute.
+      </div>
+
+      <div id="next">
+        Next: ribbon rug at 10
+      </div>
+
+    </div>
+
+
+    <!-- ================= SHOP ================= -->
+
+    <div class="shop">
+
+      <div class="shop-title">
+        🎀 BOOST SHOP 🎀
+      </div>
+
+
+      <div class="boost">
+
+        <div class="boost-name">
+          Strawberry Milk
+        </div>
+
+        <div class="boost-description">
+          +1 point every click
+        </div>
+
+        <button id="boost1">
+          BUY — 20
+        </button>
+
+      </div>
+
+
+      <div class="boost">
+
+        <div class="boost-name">
+          Shopping Mood
+        </div>
+
+        <div class="boost-description">
+          +3 points every click
+        </div>
+
+        <button id="boost2">
+          BUY — 65
+        </button>
+
+      </div>
+
+
+      <div class="boost">
+
+        <div class="boost-name">
+          Princess Energy
+        </div>
+
+        <div class="boost-description">
+          +6 points every click
+        </div>
+
+        <button id="boost3">
+          BUY — 160
+        </button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* =========================================================
+   SETUP
+========================================================= */
+
+const canvas =
+  document.getElementById("room");
+
+const ctx =
+  canvas.getContext("2d");
+
+
+ctx.imageSmoothingEnabled = false;
+
+
+let score = 0;
+
+let totalEarned = 0;
+
+let clickPower = 1;
+
+
+
+/* =========================================================
+   BASIC DRAWING HELPERS
+========================================================= */
+
+function rect(
+  x,
+  y,
+  width,
+  height,
+  color
+) {
+
+  ctx.fillStyle = color;
+
+  ctx.fillRect(
+    x,
+    y,
+    width,
+    height
+  );
+}
+
+
+
+function pixel(
+  x,
+  y,
+  color
+) {
+
+  rect(
+    x,
+    y,
+    2,
+    2,
+    color
+  );
+}
+
+
+
+/* =========================================================
+   BASE ROOM
+========================================================= */
+
+function drawRoom() {
+
+/* ---------- WALL ---------- */
+
+rect(
+  0,
+  0,
+  480,
+  220,
+  "#d99aae"
+);
+
+
+/* wallpaper panels */
+
+for (
+  let x = 0;
+  x < 480;
+  x += 40
+) {
+
+  rect(
+    x,
+    0,
+    20,
+    220,
+    "#dda1b4"
+  );
+
+}
+
+
+/* vertical wallpaper lines */
+
+for (
+  let x = 20;
+  x < 480;
+  x += 40
+) {
+
+  rect(
+    x,
+    0,
+    1,
+    220,
+    "#c8849b"
+  );
+
+}
+
+
+/* tiny floral wallpaper */
+
+for (
+  let y = 18;
+  y < 205;
+  y += 32
+) {
+
+  for (
+    let x = 12;
+    x < 475;
+    x += 40
+  ) {
+
+    pixel(
+      x,
+      y,
+      "#f6c8d3"
+    );
+
+    pixel(
+      x - 2,
+      y + 2,
+      "#efb5c5"
+    );
+
+    pixel(
+      x + 2,
+      y + 2,
+      "#efb5c5"
+    );
+
+    pixel(
+      x,
+      y + 4,
+      "#c66f8a"
+    );
+
+  }
+
+}
+
+
+/* top molding */
+
+rect(
+  0,
+  0,
+  480,
+  8,
+  "#7a4e5e"
+);
+
+rect(
+  0,
+  8,
+  480,
+  4,
+  "#f1c6d0"
+);
+
+
+
+/* ---------- WALL BASEBOARD ---------- */
+
+rect(
+  0,
+  211,
+  480,
+  4,
+  "#a66779"
+);
+
+rect(
+  0,
+  215,
+  480,
+  9,
+  "#f6d3d9"
+);
+
+rect(
+  0,
+  224,
+  480,
+  3,
+  "#8a5864"
+);
+
+
+
+/* ---------- WOOD FLOOR ---------- */
+
+rect(
+  0,
+  227,
+  480,
+  133,
+  "#b87a69"
+);
+
+
+for (
+  let y = 227;
+  y < 360;
+  y += 20
+) {
+
+  rect(
+    0,
+    y,
+    480,
+    1,
+    "#8a594f"
+  );
+
+
+  let offset =
+    ((y / 20) % 2)
+    * 30;
+
+
+  for (
+    let x = -offset;
+    x < 480;
+    x += 60
+  ) {
+
+    rect(
+      x,
+      y,
+      1,
+      20,
+      "#986154"
+    );
+
+  }
+
+}
+
+
+/* wood highlights */
+
+for (
+  let y = 232;
+  y < 355;
+  y += 20
+) {
+
+  for (
+    let x = 8;
+    x < 470;
+    x += 60
+  ) {
+
+    rect(
+      x,
+      y,
+      29,
+      1,
+      "#ca8a73"
+    );
+
+  }
+
+}
+
+}
+
+
+
+/* =========================================================
+   WINDOW + CURTAINS
+========================================================= */
+
+function drawWindow() {
+
+/* shadow */
+
+rect(
+  170,
+  39,
+  145,
+  121,
+  "#9e6478"
+);
+
+
+/* outside frame */
+
+rect(
+  163,
+  32,
+  145,
+  121,
+  "#694553"
+);
+
+
+/* white trim */
+
+rect(
+  168,
+  37,
+  135,
+  111,
+  "#f4dce1"
+);
+
+
+/* sky */
+
+rect(
+  174,
+  43,
+  123,
+  99,
+  "#a9c8ce"
+);
+
+
+/* warm sunset */
+
+rect(
+  174,
+  102,
+  123,
+  40,
+  "#e8a7a1"
+);
+
+rect(
+  174,
+  122,
+  123,
+  20,
+  "#d78e98"
+);
+
+
+/* clouds */
+
+rect(
+  190,
+  65,
+  30,
+  5,
+  "#edf1ed"
+);
+
+rect(
+  198,
+  60,
+  15,
+  5,
+  "#edf1ed"
+);
+
+rect(
+  258,
+  77,
+  25,
+  5,
+  "#f5f4ef"
+);
+
+rect(
+  266,
+  72,
+  11,
+  5,
+  "#f5f4ef"
+);
+
+
+/* window cross */
+
+rect(
+  233,
+  43,
+  5,
+  99,
+  "#825664"
+);
+
+rect(
+  174,
+  90,
+  123,
+  5,
+  "#825664"
+);
+
+
+/* little highlights */
+
+rect(
+  179,
+  47,
+  2,
+  38,
+  "#d5e7e7"
+);
+
+
+
+/* ---------- CURTAIN ROD ---------- */
+
+rect(
+  145,
+  25,
+  180,
+  4,
+  "#744a57"
+);
+
+rect(
+  142,
+  24,
+  8,
+  6,
+  "#9d6674"
+);
+
+rect(
+  323,
+  24,
+  8,
+  6,
+  "#9d6674"
+);
+
+
+
+/* ---------- LEFT CURTAIN ---------- */
+
+rect(
+  145,
+  29,
+  30,
+  132,
+  "#c45f82"
+);
+
+rect(
+  151,
+  29,
+  6,
+  132,
+  "#e68ca8"
+);
+
+rect(
+  165,
+  29,
+  5,
+  132,
+  "#a94f70"
+);
+
+
+/* folds */
+
+for (
+  let y = 37;
+  y < 157;
+  y += 12
+) {
+
+  rect(
+    148,
+    y,
+    20,
+    2,
+    "#d97898"
+  );
+
+}
+
+
+/* curtain tie */
+
+rect(
+  146,
+  113,
+  28,
+  7,
+  "#f0b0bf"
+);
+
+rect(
+  154,
+  119,
+  12,
+  5,
+  "#e08ca5"
+);
+
+
+
+/* ---------- RIGHT CURTAIN ---------- */
+
+rect(
+  297,
+  29,
+  30,
+  132,
+  "#c45f82"
+);
+
+rect(
+  301,
+  29,
+  5,
+  132,
+  "#a94f70"
+);
+
+rect(
+  315,
+  29,
+  6,
+  132,
+  "#e68ca8"
+);
+
+
+for (
+  let y = 37;
+  y < 157;
+  y += 12
+) {
+
+  rect(
+    303,
+    y,
+    20,
+    2,
+    "#d97898"
+  );
+
+}
+
+
+rect(
+  298,
+  113,
+  28,
+  7,
+  "#f0b0bf"
+);
+
+}
+
+
+
+/* =========================================================
+   GIRLY RUG
+========================================================= */
+
+function drawRug() {
+
+/* shadow */
+
+rect(
+  118,
+  285,
+  244,
+  56,
+  "#84534c"
+);
+
+
+/* dark outline */
+
+rect(
+  112,
+  279,
+  244,
+  56,
+  "#845063"
+);
+
+
+/* rug */
+
+rect(
+  116,
+  283,
+  236,
+  48,
+  "#d86f92"
+);
+
+
+/* light border */
+
+rect(
+  122,
+  289,
+  224,
+  36,
+  "#f0a7ba"
+);
+
+
+/* inside */
+
+rect(
+  128,
+  295,
+  212,
+  24,
+  "#d97898"
+);
+
+
+/* center ribbon */
+
+rect(
+  225,
+  298,
+  28,
+  18,
+  "#f7c6d2"
+);
+
+rect(
+  218,
+  300,
+  9,
+  14,
+  "#efb2c2"
+);
+
+rect(
+  251,
+  300,
+  9,
+  14,
+  "#efb2c2"
+);
+
+rect(
+  232,
+  303,
+  14,
+  8,
+  "#d66b8b"
+);
+
+
+/* tiny diamonds */
+
+for (
+  let x = 142;
+  x < 330;
+  x += 22
+) {
+
+  rect(
+    x,
+    303,
+    3,
+    3,
+    "#f9d4dc"
+  );
+
+}
+
+
+/* tassels */
+
+for (
+  let x = 120;
+  x < 350;
+  x += 12
+) {
+
+  rect(
+    x,
+    331,
+    3,
+    5,
+    "#f3b7c5"
+  );
+
+}
+
+}
+
+
+
+/* =========================================================
+   BED
+========================================================= */
+
+function drawBed() {
+
+/* floor shadow */
+
+rect(
+  21,
+  267,
+  157,
+  21,
+  "#89594f"
+);
+
+
+/* legs */
+
+rect(
+  28,
+  258,
+  7,
+  29,
+  "#574047"
+);
+
+rect(
+  163,
+  258,
+  7,
+  29,
+  "#574047"
+);
+
+
+/* frame */
+
+rect(
+  20,
+  175,
+  156,
+  91,
+  "#62464e"
+);
+
+
+/* mattress */
+
+rect(
+  27,
+  181,
+  142,
+  78,
+  "#f2dfda"
+);
+
+
+/* bedsheet shadow */
+
+rect(
+  27,
+  227,
+  142,
+  32,
+  "#b95379"
+);
+
+
+/* blanket */
+
+rect(
+  27,
+  217,
+  142,
+  36,
+  "#d96c92"
+);
+
+
+/* blanket top */
+
+rect(
+  27,
+  217,
+  142,
+  6,
+  "#ee9db5"
+);
+
+
+/* blanket stripes */
+
+for (
+  let x = 42;
+  x < 165;
+  x += 28
+) {
+
+  rect(
+    x,
+    225,
+    3,
+    27,
+    "#e98ba8"
+  );
+
+}
+
+
+/* pillow */
+
+rect(
+  37,
+  189,
+  60,
+  28,
+  "#c9aca8"
+);
+
+rect(
+  34,
+  186,
+  60,
+  27,
+  "#fff2eb"
+);
+
+rect(
+  39,
+  190,
+  43,
+  3,
+  "#ffffff"
+);
+
+
+/* pillow ribbon */
+
+rect(
+  55,
+  196,
+  15,
+  7,
+  "#e998ad"
+);
+
+rect(
+  49,
+  195,
+  7,
+  9,
+  "#f2b3c2"
+);
+
+rect(
+  69,
+  195,
+  7,
+  9,
+  "#f2b3c2"
+);
+
+
+/* headboard */
+
+rect(
+  17,
+  157,
+  8,
+  110,
+  "#584048"
+);
+
+rect(
+  171,
+  157,
+  8,
+  110,
+  "#584048"
+);
+
+rect(
+  24,
+  162,
+  148,
+  18,
+  "#8a5c65"
+);
+
+
+for (
+  let x = 35;
+  x < 165;
+  x += 17
+) {
+
+  rect(
+    x,
+    166,
+    4,
+    10,
+    "#6c4953"
+  );
+
+}
+
+
+/* heart */
+
+pixel(96,169,"#f6b6c5");
+pixel(98,169,"#f6b6c5");
+pixel(94,171,"#f6b6c5");
+pixel(100,171,"#f6b6c5");
+
+rect(
+  96,
+  173,
+  3,
+  3,
+  "#f6b6c5"
+);
+
+}
+
+
+
+/* =========================================================
+   SIDE TABLE
+========================================================= */
+
+function drawSideTable() {
+
+rect(
+  184,
+  235,
+  58,
+  47,
+  "#65474a"
+);
+
+rect(
+  188,
+  231,
+  51,
+  47,
+  "#a56c60"
+);
+
+rect(
+  193,
+  238,
+  41,
+  14,
+  "#bc7d6c"
+);
+
+rect(
+  211,
+  243,
+  4,
+  3,
+  "#f0c09b"
+);
+
+rect(
+  193,
+  258,
+  41,
+  14,
+  "#986259"
+);
+
+rect(
+  211,
+  263,
+  4,
+  3,
+  "#f0c09b"
+);
+
+rect(
+  191,
+  278,
+  6,
+  9,
+  "#65484a"
+);
+
+rect(
+  230,
+  278,
+  6,
+  9,
+  "#65484a"
+);
+
+}
+
+
+
+/* =========================================================
+   LAMP
+========================================================= */
+
+function drawLamp() {
+
+/* soft glow */
+
+rect(
+  194,
+  185,
+  38,
+  26,
+  "#e8c582"
+);
+
+rect(
+  198,
+  181,
+  30,
+  4,
+  "#f3dfa5"
+);
+
+
+/* shade */
+
+rect(
+  199,
+  185,
+  28,
+  4,
+  "#76505a"
+);
+
+rect(
+  195,
+  189,
+  36,
+  15,
+  "#76505a"
+);
+
+rect(
+  199,
+  189,
+  28,
+  12,
+  "#f2c476"
+);
+
+
+/* tiny trim */
+
+rect(
+  200,
+  199,
+  26,
+  2,
+  "#e99a7d"
+);
+
+
+/* stand */
+
+rect(
+  211,
+  204,
+  5,
+  25,
+  "#694751"
+);
+
+rect(
+  203,
+  227,
+  21,
+  5,
+  "#694751"
+);
+
+}
+
+
+
+/* =========================================================
+   DESK
+========================================================= */
+
+function drawDesk() {
+
+/* shadow */
+
+rect(
+  327,
+  252,
+  127,
+  13,
+  "#76504b"
+);
+
+
+/* desktop */
+
+rect(
+  322,
+  241,
+  130,
+  14,
+  "#76514f"
+);
+
+rect(
+  322,
+  238,
+  130,
+  12,
+  "#aa7364"
+);
+
+rect(
+  324,
+  238,
+  126,
+  3,
+  "#cd927c"
+);
+
+
+/* legs */
+
+rect(
+  331,
+  251,
+  8,
+  49,
+  "#694a49"
+);
+
+rect(
+  438,
+  251,
+  8,
+  49,
+  "#694a49"
+);
+
+
+/* drawers */
+
+rect(
+  393,
+  252,
+  45,
+  43,
+  "#83564f"
+);
+
+rect(
+  397,
+  256,
+  37,
+  14,
+  "#a66b5e"
+);
+
+rect(
+  397,
+  275,
+  37,
+  14,
+  "#9a6257"
+);
+
+
+rect(
+  413,
+  261,
+  4,
+  3,
+  "#edb78f"
+);
+
+rect(
+  413,
+  280,
+  4,
+  3,
+  "#edb78f"
+);
+
+
+/* books */
+
+rect(
+  337,
+  219,
+  8,
+  19,
+  "#8e7596"
+);
+
+rect(
+  345,
+  215,
+  9,
+  23,
+  "#c76f88"
+);
+
+rect(
+  354,
+  222,
+  9,
+  16,
+  "#d9a66e"
+);
+
+
+/* small notebook */
+
+rect(
+  369,
+  231,
+  28,
+  7,
+  "#f2d2cb"
+);
+
+rect(
+  370,
+  230,
+  26,
+  2,
+  "#be778a"
+);
+
+}
+
+
+
+/* =========================================================
+   CHAIR
+========================================================= */
+
+function drawChair() {
+
+rect(
+  350,
+  269,
+  58,
+  8,
+  "#62464a"
+);
+
+rect(
+  357,
+  249,
+  44,
+  39,
+  "#76505c"
+);
+
+rect(
+  363,
+  255,
+  32,
+  26,
+  "#d77f9d"
+);
+
+
+/* chair bow */
+
+rect(
+  374,
+  261,
+  10,
+  7,
+  "#efb0c0"
+);
+
+rect(
+  367,
+  260,
+  8,
+  9,
+  "#f4bdca"
+);
+
+rect(
+  383,
+  260,
+  8,
+  9,
+  "#f4bdca"
+);
+
+
+/* seat */
+
+rect(
+  350,
+  283,
+  58,
+  12,
+  "#65484e"
+);
+
+rect(
+  356,
+  283,
+  46,
+  8,
+  "#c86e8d"
+);
+
+
+/* legs */
+
+rect(
+  356,
+  295,
+  7,
+  33,
+  "#604448"
+);
+
+rect(
+  395,
+  295,
+  7,
+  33,
+  "#604448"
+);
+
+}
+
+
+
+/* =========================================================
+   BOOK SHELF
+========================================================= */
+
+function drawShelf() {
+
+/* shelf */
+
+rect(
+  334,
+  155,
+  117,
+  7,
+  "#674849"
+);
+
+rect(
+  330,
+  149,
+  125,
+  8,
+  "#9b675c"
+);
+
+
+/* perfume */
+
+rect(
+  342,
+  132,
+  14,
+  17,
+  "#e39bb3"
+);
+
+rect(
+  346,
+  127,
+  6,
+  5,
+  "#76505e"
+);
+
+rect(
+  345,
+  136,
+  8,
+  6,
+  "#f3b8ca"
+);
+
+
+/* books */
+
+rect(
+  370,
+  123,
+  9,
+  26,
+  "#806e91"
+);
+
+rect(
+  379,
+  128,
+  9,
+  21,
+  "#cf6f89"
+);
+
+rect(
+  388,
+  120,
+  9,
+  29,
+  "#d6a06f"
+);
+
+rect(
+  397,
+  127,
+  8,
+  22,
+  "#799191"
+);
+
+
+/* candle */
+
+rect(
+  420,
+  135,
+  12,
+  14,
+  "#f1dbc1"
+);
+
+rect(
+  424,
+  130,
+  4,
+  5,
+  "#eba26d"
+);
+
+}
+
+
+
+/* =========================================================
+   VANITY MIRROR
+========================================================= */
+
+function drawVanity() {
+
+/* mirror shadow */
+
+rect(
+  26,
+  38,
+  92,
+  104,
+  "#9b6072"
+);
+
+
+/* frame */
+
+rect(
+  21,
+  33,
+  92,
+  104,
+  "#694754"
+);
+
+
+/* cream inner frame */
+
+rect(
+  27,
+  39,
+  80,
+  92,
+  "#f2cfd6"
+);
+
+
+/* mirror */
+
+rect(
+  32,
+  44,
+  70,
+  82,
+  "#b8cbd0"
+);
+
+
+/* reflection */
+
+rect(
+  36,
+  49,
+  2,
+  54,
+  "#d9e6e7"
+);
+
+rect(
+  40,
+  49,
+  1,
+  25,
+  "#eef3f1"
+);
+
+
+/* bow at top */
+
+rect(
+  59,
+  27,
+  16,
+  9,
+  "#df7c9c"
+);
+
+rect(
+  48,
+  25,
+  12,
+  13,
+  "#ed9caf"
+);
+
+rect(
+  74,
+  25,
+  12,
+  13,
+  "#ed9caf"
+);
+
+}
+
+
+
+/* =========================================================
+   PLANT
+========================================================= */
+
+function drawPlant() {
+
+/* pot shadow */
+
+rect(
+  438,
+  309,
+  31,
+  31,
+  "#76504a"
+);
+
+
+/* pot */
+
+rect(
+  440,
+  306,
+  28,
+  29,
+  "#c77f6c"
+);
+
+rect(
+  437,
+  303,
+  34,
+  8,
+  "#ad6c61"
+);
+
+
+/* stems */
+
+rect(
+  452,
+  268,
+  3,
+  35,
+  "#557052"
+);
+
+rect(
+  459,
+  277,
+  3,
+  28,
+  "#557052"
+);
+
+rect(
+  445,
+  278,
+  3,
+  27,
+  "#557052"
+);
+
+
+/* leaves */
+
+rect(
+  434,
+  270,
+  15,
+  8,
+  "#6f8f64"
+);
+
+rect(
+  446,
+  261,
+  13,
+  9,
+  "#779c6a"
+);
+
+rect(
+  457,
+  267,
+  16,
+  8,
+  "#66845c"
+);
+
+rect(
+  461,
+  282,
+  15,
+  8,
+  "#789568"
+);
+
+rect(
+  433,
+  284,
+  14,
+  8,
+  "#809e70"
+);
+
+}
+
+
+
+/* =========================================================
+   WALL DECOR
+========================================================= */
+
+function drawWallDecor() {
+
+/* little frame */
+
+rect(
+  360,
+  48,
+  61,
+  71,
+  "#9f6376"
+);
+
+rect(
+  354,
+  42,
+  61,
+  71,
+  "#674754"
+);
+
+rect(
+  360,
+  48,
+  49,
+  59,
+  "#f4d9d3"
+);
+
+rect(
+  366,
+  54,
+  37,
+  47,
+  "#e9a8b7"
+);
+
+
+/* flower */
+
+rect(
+  382,
+  65,
+  5,
+  5,
+  "#b95878"
+);
+
+rect(
+  377,
+  70,
+  5,
+  5,
+  "#df7694"
+);
+
+rect(
+  387,
+  70,
+  5,
+  5,
+  "#df7694"
+);
+
+rect(
+  382,
+  75,
+  5,
+  5,
+  "#df7694"
+);
+
+rect(
+  383,
+  80,
+  3,
+  14,
+  "#66805d"
+);
+
+
+/* postcards */
+
+rect(
+  425,
+  69,
+  24,
+  31,
+  "#eec4bc"
+);
+
+rect(
+  432,
+  76,
+  11,
+  3,
+  "#c67b89"
+);
+
+rect(
+  432,
+  83,
+  8,
+  2,
+  "#d99aa5"
+);
+
+}
+
+
+
+/* =========================================================
+   FAIRY LIGHTS
+========================================================= */
+
+function drawFairyLights() {
+
+const lights = [
+
+  [19, 22],
+  [50, 31],
+  [82, 24],
+  [115, 32],
+  [148, 25],
+  [180, 34],
+  [214, 27],
+  [250, 34],
+  [286, 27],
+  [323, 33],
+  [360, 25],
+  [400, 31],
+  [444, 22]
+
+];
+
+
+/* wire */
+
+for (
+  let x = 17;
+  x < 450;
+  x += 3
+) {
+
+  const y =
+    21 +
+    Math.floor(
+      Math.sin(x / 17)
+      * 6
+    );
+
+  rect(
+    x,
+    y,
+    3,
+    1,
+    "#684852"
+  );
+
+}
+
+
+/* bulbs */
+
+const colors = [
+  "#ffe19a",
+  "#f39bb2",
+  "#f4c58f",
+  "#ffd4dd"
+];
+
+
+lights.forEach(
+  ([x,y],i) => {
+
+    rect(
+      x,
+      y,
+      3,
+      3,
+      "#75515a"
+    );
+
+    rect(
+      x,
+      y + 3,
+      5,
+      6,
+      colors[
+        i %
+        colors.length
+      ]
+    );
+
+    rect(
+      x + 1,
+      y + 4,
+      2,
+      2,
+      "#fff5c7"
+    );
+
+  }
+);
+
+}
+
+
+
+/* =========================================================
+   DRAW ALL
+========================================================= */
+
+function redraw() {
+
+ctx.clearRect(
+  0,
+  0,
+  canvas.width,
+  canvas.height
+);
+
+
+drawRoom();
+
+
+if (
+  totalEarned >= 60
+)
+  drawWindow();
+
+
+if (
+  totalEarned >= 175
+)
+  drawVanity();
+
+
+if (
+  totalEarned >= 270
+)
+  drawWallDecor();
+
+
+if (
+  totalEarned >= 330
+)
+  drawFairyLights();
+
+
+if (
+  totalEarned >= 140
+)
+  drawShelf();
+
+
+if (
+  totalEarned >= 15
+)
+  drawBed();
+
+
+if (
+  totalEarned >= 25
+)
+  drawSideTable();
+
+
+if (
+  totalEarned >= 40
+)
+  drawLamp();
+
+
+if (
+  totalEarned >= 80
+)
+  drawDesk();
+
+
+if (
+  totalEarned >= 110
+)
+  drawChair();
+
+
+if (
+  totalEarned >= 220
+)
+  drawPlant();
+
+
+if (
+  totalEarned >= 10
+)
+  drawRug();
+
+}
+
+
+
+/* =========================================================
+   UNLOCKS
+========================================================= */
+
+const unlocks = [
+
+  {
+    score: 10,
+    name: "Ribbon Rug"
+  },
+
+  {
+    score: 15,
+    name: "Princess Bed"
+  },
+
+  {
+    score: 25,
+    name: "Bedside Table"
+  },
+
+  {
+    score: 40,
+    name: "Warm Lamp"
+  },
+
+  {
+    score: 60,
+    name: "Pink Curtains"
+  },
+
+  {
+    score: 80,
+    name: "Study Desk"
+  },
+
+  {
+    score: 110,
+    name: "Ribbon Chair"
+  },
+
+  {
+    score: 140,
+    name: "Cute Shelf"
+  },
+
+  {
+    score: 175,
+    name: "Vanity Mirror"
+  },
+
+  {
+    score: 220,
+    name: "House Plant"
+  },
+
+  {
+    score: 270,
+    name: "Wall Decorations"
+  },
+
+  {
+    score: 330,
+    name: "Fairy Lights"
+  }
+
+];
+
+
+let unlocked =
+  new Set();
+
+
+function checkUnlocks() {
+
+for (
+  const item
+  of unlocks
+) {
+
+  if (
+    totalEarned >= item.score &&
+    !unlocked.has(item.score)
+  ) {
+
+    unlocked.add(
+      item.score
+    );
+
+    document
+      .getElementById(
+        "message"
+      )
+      .textContent =
+        "♡ " +
+        item.name +
+        " unlocked! ♡";
+
+  }
+
+}
+
+
+updateNextItem();
+
+}
+
+
+
+function updateNextItem() {
+
+const nextItem =
+  unlocks.find(
+    item =>
+      totalEarned <
+      item.score
+  );
+
+
+const nextText =
+  document
+  .getElementById(
+    "next"
+  );
+
+
+if (
+  nextItem
+) {
+
+  nextText.textContent =
+    "Next: " +
+    nextItem.name +
+    " at " +
+    nextItem.score;
+
+}
+
+else {
+
+  nextText.textContent =
+    "♡ Room complete ♡";
+
+}
+
+}
+
+
+
+/* =========================================================
+   CLICK
+========================================================= */
+
+document
+  .getElementById(
+    "decorate"
+  )
+  .addEventListener(
+    "click",
+    () => {
+
+      score +=
+        clickPower;
+
+      totalEarned +=
+        clickPower;
+
+
+      checkUnlocks();
+
+      redraw();
+
+      updateUI();
+
+    }
+  );
+
+
+
+/* =========================================================
+   BOOST SYSTEM
+========================================================= */
+
+const boosts = [
+
+  {
+    id: "boost1",
+    cost: 20,
+    bonus: 1,
+    purchased: false
+  },
+
+  {
+    id: "boost2",
+    cost: 65,
+    bonus: 3,
+    purchased: false
+  },
+
+  {
+    id: "boost3",
+    cost: 160,
+    bonus: 6,
+    purchased: false
+  }
+
+];
+
+
+boosts.forEach(
+  boost => {
+
+    const button =
+      document.getElementById(
+        boost.id
+      );
+
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        if (
+          score >= boost.cost &&
+          !boost.purchased
+        ) {
+
+          score -=
+            boost.cost;
+
+
+          clickPower +=
+            boost.bonus;
+
+
+          boost.purchased =
+            true;
+
+
+          button.textContent =
+            "BOUGHT ♡";
+
+
+          button.disabled =
+            true;
+
+
+          document
+            .getElementById(
+              "message"
+            )
+            .textContent =
+              "♡ Click power is now +" +
+              clickPower +
+              "!";
+
+
+          updateUI();
+
+        }
+
+      }
+    );
+
+  }
+);
+
+
+
+/* =========================================================
+   UI
+========================================================= */
+
+function updateUI() {
+
+document
+  .getElementById(
+    "score"
+  )
+  .textContent =
+    score;
+
+
+document
+  .getElementById(
+    "power"
+  )
+  .textContent =
+    "+" +
+    clickPower +
+    " per click";
+
+
+boosts.forEach(
+  boost => {
+
+    const button =
+      document.getElementById(
+        boost.id
+      );
+
+
+    if (
+      !boost.purchased
+    ) {
+
+      button.disabled =
+        score <
+        boost.cost;
+
+    }
+
+  }
+);
+
+}
+
+
+
+/* =========================================================
+   INITIALIZE
+========================================================= */
+
+redraw();
+
+updateUI();
+
+updateNextItem();
+
+</script>
+
+</body>
+</html>
