@@ -107,18 +107,127 @@ body {
     2px;
 }
 
+.score-wrap {
+  position: relative;
+
+  display: inline-block;
+
+  min-width: 170px;
+
+  margin-top: 4px;
+
+  overflow: visible;
+}
+
 .score {
   margin-top:
-    4px;
+    0;
 
   font-size:
-    27px;
+    46px;
+
+  line-height:
+    1.05;
 
   font-weight:
     bold;
 
+  letter-spacing:
+    2px;
+
+  font-family:
+    "Courier New",
+    "Lucida Console",
+    monospace;
+
   color:
     #ad4d70;
+
+  text-shadow:
+    2px 0 #f8d9e2,
+    -2px 0 #f8d9e2,
+    0 2px #f8d9e2,
+    0 -2px #f8d9e2;
+}
+
+.score-pop-layer {
+  position: absolute;
+
+  inset: 0;
+
+  pointer-events: none;
+
+  overflow: visible;
+
+  z-index: 20;
+}
+
+.score-pop {
+  position: absolute;
+
+  left: 50%;
+
+  top: 52%;
+
+  font-family:
+    "Courier New",
+    "Lucida Console",
+    monospace;
+
+  font-size: 20px;
+
+  line-height: 1;
+
+  font-weight: 900;
+
+  letter-spacing: 1px;
+
+  color: #c84f7d;
+
+  white-space: nowrap;
+
+  text-shadow:
+    2px 0 #fff0f4,
+    -2px 0 #fff0f4,
+    0 2px #fff0f4,
+    0 -2px #fff0f4;
+
+  transform: translate(-50%, 8px);
+
+  opacity: 0;
+
+  animation:
+    scorePop 700ms steps(7, end) forwards;
+}
+
+@keyframes scorePop {
+  0% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, 10px)
+      scale(0.85);
+  }
+
+  14% {
+    opacity: 1;
+
+    transform:
+      translate(-50%, 0)
+      scale(1.08);
+  }
+
+  70% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0;
+
+    transform:
+      translate(-50%, -52px)
+      scale(1);
+  }
 }
 
 .stats {
@@ -633,10 +742,20 @@ canvas {
     ♡ MY LITTLE PINK ROOM ♡
   </div>
 
-  <div
-    class="score"
-    id="score">
-    0
+  <div class="score-wrap">
+
+    <div
+      class="score"
+      id="score">
+      0
+    </div>
+
+    <div
+      class="score-pop-layer"
+      id="scorePopLayer"
+      aria-hidden="true">
+    </div>
+
   </div>
 
   <div class="stats">
@@ -6053,6 +6172,77 @@ function earnPoints(
 
 
 /* =====================================================
+   CLICK SCORE POP EFFECT
+===================================================== */
+
+function showScorePop(
+  amount
+) {
+
+  const layer =
+    document.getElementById(
+      "scorePopLayer"
+    );
+
+
+  if (
+    !layer
+  ) {
+
+    return;
+
+  }
+
+
+  const pop =
+    document.createElement(
+      "div"
+    );
+
+
+  pop.className =
+    "score-pop";
+
+
+  pop.textContent =
+    "+" +
+    formatNumber(
+      amount
+    );
+
+
+  /* tiny left/right variation so fast clicks can be seen separately */
+
+  const jitter =
+    Math.floor(
+      Math.random() * 61
+    ) - 30;
+
+
+  pop.style.left =
+    "calc(50% + " +
+    jitter +
+    "px)";
+
+
+  layer.appendChild(
+    pop
+  );
+
+
+  setTimeout(
+    () => {
+
+      pop.remove();
+
+    },
+    760
+  );
+
+}
+
+
+/* =====================================================
    MAIN CLICK
 ===================================================== */
 
@@ -6065,6 +6255,11 @@ document
     () => {
 
       playClickSound();
+
+
+      showScorePop(
+        clickPower
+      );
 
 
       earnPoints(
