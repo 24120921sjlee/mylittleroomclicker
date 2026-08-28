@@ -445,6 +445,125 @@ canvas {
 }
 
 
+/* =================================
+   FURNITURE STORAGE
+================================= */
+
+.furniture-storage {
+  margin-top:
+    18px;
+
+  padding-top:
+    12px;
+
+  border-top:
+    4px dashed
+    #a6677d;
+}
+
+.furniture-storage h2 {
+  font-size:
+    14px;
+
+  margin-bottom:
+    6px;
+}
+
+.storage-note {
+  text-align:
+    center;
+
+  font-size:
+    9px;
+
+  margin-bottom:
+    10px;
+
+  color:
+    #8d5269;
+}
+
+.storage-item {
+  background:
+    #fff0f4;
+
+  border:
+    3px solid
+    #a6677d;
+
+  padding:
+    8px;
+
+  margin-bottom:
+    8px;
+}
+
+.storage-name {
+  font-size:
+    11px;
+
+  font-weight:
+    bold;
+
+  margin-bottom:
+    4px;
+}
+
+.storage-cost {
+  font-size:
+    9px;
+
+  margin-bottom:
+    6px;
+}
+
+.storage-item button {
+  width:
+    100%;
+
+  min-height:
+    32px;
+
+  background:
+    #d67494;
+
+  color:
+    white;
+
+  border:
+    3px solid
+    #754657;
+
+  font-family:
+    inherit;
+
+  font-size:
+    9px;
+
+  font-weight:
+    bold;
+
+  cursor:
+    pointer;
+}
+
+.storage-item button:hover:not(:disabled) {
+  background:
+    #e386a3;
+}
+
+.storage-item button:disabled {
+  background:
+    #c9a3af;
+
+  color:
+    #806a73;
+
+  cursor:
+    default;
+}
+
+
 @media(max-width: 900px) {
 
   .content {
@@ -662,6 +781,28 @@ canvas {
     </div>
 
   </div>
+
+
+  <!-- ================= FURNITURE STORAGE ================= -->
+
+  <div
+    id="furnitureStorage"
+    class="furniture-storage"
+    style="display:none;"
+  >
+
+    <h2>
+      ♡ FURNITURE STORAGE ♡
+    </h2>
+
+    <div class="storage-note">
+      Unlocked at 1,500 total points — click an item to place it!
+    </div>
+
+    <div id="storageItems"></div>
+
+  </div>
+
 
 </aside>
 
@@ -4169,6 +4310,790 @@ function drawFairyLights() {
 
 
 /* =====================================================
+   STORAGE — PINK OTTOMAN
+===================================================== */
+
+function drawOttoman() {
+
+  /* floor shadow */
+
+  rect(
+    244,
+    308,
+    58,
+    15,
+    "#845451"
+  );
+
+
+  /* dark frame */
+
+  rect(
+    244,
+    286,
+    58,
+    31,
+    "#704b5a"
+  );
+
+
+  /* cushion */
+
+  rect(
+    248,
+    283,
+    50,
+    29,
+    "#d77a9a"
+  );
+
+
+  rect(
+    253,
+    287,
+    40,
+    20,
+    "#efaec0"
+  );
+
+
+  /* tuft button */
+
+  rect(
+    271,
+    295,
+    4,
+    4,
+    "#bf5f81"
+  );
+
+
+  /* legs */
+
+  rect(
+    250,
+    312,
+    6,
+    9,
+    "#65474b"
+  );
+
+
+  rect(
+    290,
+    312,
+    6,
+    9,
+    "#65474b"
+  );
+
+}
+
+
+/* =====================================================
+   STORAGE — FLOWER BASKET
+===================================================== */
+
+function drawFlowerBasket() {
+
+  /* handle */
+
+  rect(
+    34,
+    292,
+    4,
+    18,
+    "#8f604f"
+  );
+
+
+  rect(
+    57,
+    292,
+    4,
+    18,
+    "#8f604f"
+  );
+
+
+  rect(
+    38,
+    289,
+    19,
+    4,
+    "#8f604f"
+  );
+
+
+  /* flowers */
+
+  rect(
+    27,
+    290,
+    9,
+    7,
+    "#ef9fb3"
+  );
+
+
+  rect(
+    39,
+    286,
+    9,
+    8,
+    "#f4c5d0"
+  );
+
+
+  rect(
+    51,
+    291,
+    9,
+    7,
+    "#d77596"
+  );
+
+
+  rect(
+    32,
+    295,
+    3,
+    11,
+    "#66815e"
+  );
+
+
+  rect(
+    44,
+    293,
+    3,
+    13,
+    "#66815e"
+  );
+
+
+  rect(
+    55,
+    296,
+    3,
+    10,
+    "#66815e"
+  );
+
+
+  /* basket */
+
+  rect(
+    25,
+    305,
+    42,
+    34,
+    "#9d6a57"
+  );
+
+
+  rect(
+    29,
+    309,
+    34,
+    26,
+    "#c99273"
+  );
+
+
+  for (
+    let x = 32;
+    x < 61;
+    x += 8
+  ) {
+
+    rect(
+      x,
+      310,
+      2,
+      24,
+      "#a8745e"
+    );
+
+  }
+
+}
+
+
+/* =====================================================
+   STORAGE — HEART WALL FRAME
+===================================================== */
+
+function drawHeartFrame() {
+
+  /* frame shadow */
+
+  rect(
+    120,
+    59,
+    40,
+    47,
+    "#9b6273"
+  );
+
+
+  /* frame */
+
+  rect(
+    116,
+    55,
+    40,
+    47,
+    "#654651"
+  );
+
+
+  rect(
+    120,
+    59,
+    32,
+    39,
+    "#f3d7dc"
+  );
+
+
+  /* heart */
+
+  rect(
+    129,
+    70,
+    8,
+    8,
+    "#dd7697"
+  );
+
+
+  rect(
+    137,
+    70,
+    8,
+    8,
+    "#dd7697"
+  );
+
+
+  rect(
+    125,
+    75,
+    24,
+    8,
+    "#dd7697"
+  );
+
+
+  rect(
+    130,
+    83,
+    14,
+    7,
+    "#dd7697"
+  );
+
+
+  rect(
+    135,
+    90,
+    5,
+    4,
+    "#dd7697"
+  );
+
+}
+
+
+/* =====================================================
+   STORAGE — FANCY FLOOR LAMP
+===================================================== */
+
+function drawFloorLamp() {
+
+  /* soft glow */
+
+  rect(
+    449,
+    185,
+    29,
+    31,
+    "#e9cb8b"
+  );
+
+
+  /* shade outline */
+
+  rect(
+    455,
+    189,
+    21,
+    4,
+    "#75505a"
+  );
+
+
+  rect(
+    451,
+    193,
+    29,
+    18,
+    "#75505a"
+  );
+
+
+  /* shade */
+
+  rect(
+    456,
+    193,
+    19,
+    15,
+    "#f1c782"
+  );
+
+
+  /* stem */
+
+  rect(
+    463,
+    211,
+    5,
+    82,
+    "#664852"
+  );
+
+
+  /* base */
+
+  rect(
+    454,
+    292,
+    23,
+    6,
+    "#664852"
+  );
+
+}
+
+
+/* =====================================================
+   STORAGE — RECORD PLAYER
+===================================================== */
+
+function drawRecordPlayer() {
+
+  /* case */
+
+  rect(
+    245,
+    246,
+    52,
+    31,
+    "#654853"
+  );
+
+
+  rect(
+    249,
+    250,
+    44,
+    23,
+    "#b87588"
+  );
+
+
+  /* record */
+
+  rect(
+    254,
+    253,
+    19,
+    19,
+    "#493f43"
+  );
+
+
+  rect(
+    260,
+    259,
+    7,
+    7,
+    "#d66f91"
+  );
+
+
+  rect(
+    263,
+    262,
+    2,
+    2,
+    "#f1b4c5"
+  );
+
+
+  /* tone arm */
+
+  rect(
+    279,
+    254,
+    3,
+    13,
+    "#eadbca"
+  );
+
+
+  rect(
+    281,
+    264,
+    7,
+    3,
+    "#eadbca"
+  );
+
+
+  /* knobs */
+
+  rect(
+    282,
+    269,
+    3,
+    3,
+    "#f1c7a4"
+  );
+
+
+  rect(
+    288,
+    269,
+    3,
+    3,
+    "#f1c7a4"
+  );
+
+}
+
+
+/* =====================================================
+   STORAGE — SECOND PLANT
+===================================================== */
+
+function drawSecondPlant() {
+
+  /* pot */
+
+  rect(
+    73,
+    308,
+    27,
+    28,
+    "#c57b69"
+  );
+
+
+  rect(
+    70,
+    305,
+    33,
+    7,
+    "#a9685f"
+  );
+
+
+  /* stems */
+
+  rect(
+    84,
+    272,
+    3,
+    33,
+    "#587257"
+  );
+
+
+  rect(
+    91,
+    279,
+    3,
+    26,
+    "#587257"
+  );
+
+
+  rect(
+    78,
+    281,
+    3,
+    24,
+    "#587257"
+  );
+
+
+  /* leaves */
+
+  rect(
+    72,
+    274,
+    11,
+    7,
+    "#769667"
+  );
+
+
+  rect(
+    82,
+    265,
+    13,
+    8,
+    "#809f70"
+  );
+
+
+  rect(
+    91,
+    273,
+    13,
+    7,
+    "#69895f"
+  );
+
+
+  rect(
+    71,
+    286,
+    11,
+    7,
+    "#6f9063"
+  );
+
+}
+
+
+/* =====================================================
+   STORAGE — KITTY PILLOW
+===================================================== */
+
+function drawKittyPillow() {
+
+  /* ears */
+
+  rect(
+    145,
+    214,
+    8,
+    8,
+    "#e4a4b5"
+  );
+
+
+  rect(
+    160,
+    214,
+    8,
+    8,
+    "#e4a4b5"
+  );
+
+
+  /* pillow */
+
+  rect(
+    144,
+    219,
+    25,
+    23,
+    "#f2c1cb"
+  );
+
+
+  rect(
+    148,
+    222,
+    17,
+    16,
+    "#f7d3da"
+  );
+
+
+  /* face */
+
+  rect(
+    150,
+    228,
+    2,
+    2,
+    "#5a4249"
+  );
+
+
+  rect(
+    161,
+    228,
+    2,
+    2,
+    "#5a4249"
+  );
+
+
+  rect(
+    156,
+    232,
+    3,
+    2,
+    "#bd7284"
+  );
+
+
+  /* tiny whiskers */
+
+  rect(
+    147,
+    232,
+    6,
+    1,
+    "#9b6d78"
+  );
+
+
+  rect(
+    160,
+    232,
+    6,
+    1,
+    "#9b6d78"
+  );
+
+}
+
+
+/* =====================================================
+   STORAGE — MAKEUP CART
+===================================================== */
+
+function drawMakeupCart() {
+
+  /* cart frame */
+
+  rect(
+    301,
+    231,
+    6,
+    69,
+    "#6c4d57"
+  );
+
+
+  rect(
+    337,
+    231,
+    6,
+    69,
+    "#6c4d57"
+  );
+
+
+  /* shelves */
+
+  rect(
+    299,
+    235,
+    46,
+    7,
+    "#d986a2"
+  );
+
+
+  rect(
+    299,
+    258,
+    46,
+    7,
+    "#d986a2"
+  );
+
+
+  rect(
+    299,
+    281,
+    46,
+    7,
+    "#d986a2"
+  );
+
+
+  /* top bottles */
+
+  rect(
+    306,
+    247,
+    7,
+    11,
+    "#e6a1b7"
+  );
+
+
+  rect(
+    317,
+    244,
+    7,
+    14,
+    "#f1bcca"
+  );
+
+
+  rect(
+    329,
+    249,
+    7,
+    9,
+    "#ce7898"
+  );
+
+
+  /* folded towels */
+
+  rect(
+    306,
+    270,
+    29,
+    8,
+    "#f2ccd5"
+  );
+
+
+  rect(
+    309,
+    267,
+    23,
+    5,
+    "#e4a3b6"
+  );
+
+
+  /* wheels */
+
+  rect(
+    300,
+    298,
+    8,
+    6,
+    "#4d4045"
+  );
+
+
+  rect(
+    336,
+    298,
+    8,
+    6,
+    "#4d4045"
+  );
+
+}
+
+
+/* =====================================================
    REDRAW EVERYTHING
 ===================================================== */
 
@@ -4381,6 +5306,64 @@ function redraw() {
     drawRug();
   }
 
+
+  /* OPTIONAL FURNITURE STORAGE ITEMS */
+
+  if (
+    storageFurniture[0].placed
+  ) {
+    drawOttoman();
+  }
+
+
+  if (
+    storageFurniture[1].placed
+  ) {
+    drawFlowerBasket();
+  }
+
+
+  if (
+    storageFurniture[2].placed
+  ) {
+    drawHeartFrame();
+  }
+
+
+  if (
+    storageFurniture[3].placed
+  ) {
+    drawFloorLamp();
+  }
+
+
+  if (
+    storageFurniture[4].placed
+  ) {
+    drawRecordPlayer();
+  }
+
+
+  if (
+    storageFurniture[5].placed
+  ) {
+    drawSecondPlant();
+  }
+
+
+  if (
+    storageFurniture[6].placed
+  ) {
+    drawKittyPillow();
+  }
+
+
+  if (
+    storageFurniture[7].placed
+  ) {
+    drawMakeupCart();
+  }
+
 }
 
 
@@ -4531,6 +5514,358 @@ const unlocks = [
 const unlocked =
   new Set();
 
+/* =====================================================
+   FURNITURE STORAGE SYSTEM
+===================================================== */
+
+let storageUnlocked =
+  false;
+
+
+const storageFurniture = [
+
+  {
+    id:
+      "ottoman",
+
+    name:
+      "Pink Ottoman",
+
+    cost:
+      200,
+
+    placed:
+      false
+  },
+
+
+  {
+    id:
+      "flowerBasket",
+
+    name:
+      "Flower Basket",
+
+    cost:
+      350,
+
+    placed:
+      false
+  },
+
+
+  {
+    id:
+      "heartFrame",
+
+    name:
+      "Heart Wall Frame",
+
+    cost:
+      450,
+
+    placed:
+      false
+  },
+
+
+  {
+    id:
+      "floorLamp",
+
+    name:
+      "Fancy Floor Lamp",
+
+    cost:
+      600,
+
+    placed:
+      false
+  },
+
+
+  {
+    id:
+      "recordPlayer",
+
+    name:
+      "Record Player",
+
+    cost:
+      800,
+
+    placed:
+      false
+  },
+
+
+  {
+    id:
+      "secondPlant",
+
+    name:
+      "Second Plant",
+
+    cost:
+      1000,
+
+    placed:
+      false
+  },
+
+
+  {
+    id:
+      "kittyPillow",
+
+    name:
+      "Kitty Pillow",
+
+    cost:
+      1250,
+
+    placed:
+      false
+  },
+
+
+  {
+    id:
+      "makeupCart",
+
+    name:
+      "Makeup Cart",
+
+    cost:
+      1500,
+
+    placed:
+      false
+  }
+
+];
+
+
+function checkStorageUnlock() {
+
+  if (
+    totalEarned >= 1500 &&
+    !storageUnlocked
+  ) {
+
+    storageUnlocked =
+      true;
+
+
+    document
+      .getElementById(
+        "furnitureStorage"
+      )
+      .style.display =
+        "block";
+
+
+    document
+      .getElementById(
+        "message"
+      )
+      .textContent =
+        "♡ Furniture Storage unlocked! Choose what you want to add ♡";
+
+
+    playUnlockSound();
+
+
+    renderStorage();
+
+    updateNextItem();
+
+  }
+
+}
+
+
+function renderStorage() {
+
+  if (
+    !storageUnlocked
+  ) {
+
+    return;
+
+  }
+
+
+  const container =
+    document.getElementById(
+      "storageItems"
+    );
+
+
+  container.innerHTML =
+    "";
+
+
+  storageFurniture.forEach(
+    item => {
+
+      const box =
+        document.createElement(
+          "div"
+        );
+
+
+      box.className =
+        "storage-item";
+
+
+      const name =
+        document.createElement(
+          "div"
+        );
+
+
+      name.className =
+        "storage-name";
+
+
+      name.textContent =
+        item.name;
+
+
+      const cost =
+        document.createElement(
+          "div"
+        );
+
+
+      cost.className =
+        "storage-cost";
+
+
+      cost.textContent =
+        item.placed
+        ? "Placed in room ♡"
+        : "Cost: " +
+          formatNumber(
+            item.cost
+          ) +
+          " points";
+
+
+      const button =
+        document.createElement(
+          "button"
+        );
+
+
+      if (
+        item.placed
+      ) {
+
+        button.textContent =
+          "✓ PLACED";
+
+
+        button.disabled =
+          true;
+
+      }
+
+      else {
+
+        button.textContent =
+          "ADD TO ROOM";
+
+
+        button.disabled =
+          score <
+          item.cost;
+
+
+        button.addEventListener(
+          "click",
+          () => {
+
+            buyStorageFurniture(
+              item
+            );
+
+          }
+        );
+
+      }
+
+
+      box.appendChild(
+        name
+      );
+
+
+      box.appendChild(
+        cost
+      );
+
+
+      box.appendChild(
+        button
+      );
+
+
+      container.appendChild(
+        box
+      );
+
+    }
+  );
+
+}
+
+
+function buyStorageFurniture(
+  item
+) {
+
+  if (
+    item.placed ||
+    score < item.cost
+  ) {
+
+    return;
+
+  }
+
+
+  score -=
+    item.cost;
+
+
+  item.placed =
+    true;
+
+
+  playUpgradeSound();
+
+
+  document
+    .getElementById(
+      "message"
+    )
+    .textContent =
+      "♡ " +
+      item.name +
+      " added to your room! ♡";
+
+
+  redraw();
+
+  updateUI();
+
+  renderStorage();
+
+}
+
+
 
 /* =====================================================
    CHECK UNLOCKS
@@ -4627,8 +5962,21 @@ function updateNextItem() {
 
   else {
 
-    label.textContent =
-      "♡ Room complete — upgrades continue forever! ♡";
+    if (
+      !storageUnlocked
+    ) {
+
+      label.textContent =
+        "♡ Base room complete — Furniture Storage unlocks at 1.5K total points! ♡";
+
+    }
+
+    else {
+
+      label.textContent =
+        "♡ Choose extra furniture from Storage — upgrades continue forever! ♡";
+
+    }
 
   }
 
@@ -4652,6 +6000,9 @@ function earnPoints(
 
 
   checkUnlocks();
+
+
+  checkStorageUnlock();
 
 
   redraw();
@@ -5142,6 +6493,15 @@ function updateUI() {
 
     }
   );
+
+
+  if (
+    storageUnlocked
+  ) {
+
+    renderStorage();
+
+  }
 
 }
 
